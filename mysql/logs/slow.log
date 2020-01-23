@@ -1,0 +1,27 @@
+mysqld, Version: 5.7.28-log (MySQL Community Server (GPL)). started with:
+Tcp port: 0  Unix socket: /var/run/mysqld/mysqld.sock
+Time                 Id Command    Argument
+mysqld, Version: 5.7.28-log (MySQL Community Server (GPL)). started with:
+Tcp port: 0  Unix socket: /var/run/mysqld/mysqld.sock
+Time                 Id Command    Argument
+# Time: 2020-01-23T15:26:29.476127Z
+# User@Host: root[root] @ localhost []  Id:     3
+# Query_time: 0.260525  Lock_time: 0.000439 Rows_sent: 0  Rows_examined: 0
+use mysql;
+SET timestamp=1579793189;
+INSERT INTO time_zone_transition_type (Time_zone_id, Transition_type_id, Offset, Is_DST, Abbreviation) VALUES
+ (@time_zone_id, 0, 14553, 0, 'LMT')
+,(@time_zone_id, 1, 13505, 0, 'PMT')
+,(@time_zone_id, 2, 14400, 0, '+04')
+,(@time_zone_id, 3, 21600, 1, '+06')
+,(@time_zone_id, 4, 18000, 0, '+05')
+,(@time_zone_id, 5, 18000, 0, '+05')
+,(@time_zone_id, 6, 21600, 1, '+06')
+,(@time_zone_id, 7, 18000, 1, '+05')
+,(@time_zone_id, 8, 14400, 0, '+04')
+,(@time_zone_id, 9, 21600, 0, '+06')
+,(@time_zone_id, 10, 21600, 1, '+06')
+,(@time_zone_id, 11, 18000, 0, '+05');
+mysqld, Version: 5.7.28-log (MySQL Community Server (GPL)). started with:
+Tcp port: 0  Unix socket: /var/run/mysqld/mysqld.sock
+Time                 Id Command    Argument
