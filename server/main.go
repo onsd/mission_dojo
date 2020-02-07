@@ -24,10 +24,6 @@ func main() {
 	userGroup := e.Group("/user")
 	userGroup.GET("/get", userHandler.GetUser)
 	userGroup.POST("/create", userHandler.CreateUser)
-	// //user
-	// http.HandleFunc("/user/create", handler.CreateUser)
-	// http.HandleFunc("/user/get", userHander.GetUser)
-	// http.HandleFunc("/user/update", handler.UpdateUser)
 
 	// Start server
 	e.Logger.Fatal(e.Start(":8080"))

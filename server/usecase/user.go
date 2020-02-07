@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"encoding/base64"
 	"main/domain/model"
 	"main/domain/repository"
 )
@@ -30,7 +31,10 @@ func (ur userUseCase) GetUser(token string) (users *model.User, err error) {
 }
 
 func (ur userUseCase) CreateUser(name string) (user *model.User, err error) {
-	user, err = ur.userRepository.CreateUser(name)
+	// nameからtokenを生成
+	token := base64.StdEncoding.EncodeToString([]byte(name))
+	user, err = ur.userRepository.CreateUser(token)
+
 	if err != nil {
 		return nil, err
 	}

@@ -3,11 +3,10 @@ package persistence
 // repositoryにしたいがdomain/respositoryとかぶるのでpersistence
 import (
 	"database/sql"
-	"encoding/base64"
 	"main/domain/model"
 	"main/domain/repository"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql" // for mysql
 )
 
 type userPersistence struct{}
@@ -31,21 +30,24 @@ func (up userPersistence) GetUser(token string) (*model.User, error) {
 	return &user, nil
 }
 
-func (up userPersistence) CreateUser(name string) (*model.User, error) {
+func (up userPersistence) CreateUser(token string) (*model.User, error) {
+	// コンテナにしたときのために環境変数から取るようにする
 	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/test")
 	defer db.Close()
 	if err != nil {
 		return nil, err
 	}
-	token := base64.StdEncoding.EncodeToString([]byte(name))
+
 	stmt, err := db.Prepare("INSERT INTO users (name, token) values (?, ?)")
 	if err != nil {
 		return nil, err
 	}
-	_, err = stmt.Exec(name, token)
+
+	_, err = stmt.Exec(stmt, token)
 	if err != nil {
 		return nil, err
 	}
+
 	user := model.User{Token: token}
 	return &user, nil
 }
