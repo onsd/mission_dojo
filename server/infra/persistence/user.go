@@ -3,6 +3,7 @@ package persistence
 // repositoryにしたいがdomain/respositoryとかぶるのでpersistence
 import (
 	"context"
+	"main/domain/model"
 	"main/domain/repository"
 )
 

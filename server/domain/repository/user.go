@@ -6,5 +6,5 @@ import (
 )
 
 type UserRepository interface {
-	GetUser(context.Context) []*model.User, error)
+	GetUser(context.Context) ([]*model.User, error)
 }
