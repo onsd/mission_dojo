@@ -2,8 +2,11 @@ package persistence
 
 // repositoryにしたいがdomain/respositoryとかぶるのでpersistence
 import (
+	"database/sql"
 	"main/domain/model"
 	"main/domain/repository"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type userPersistence struct{}
@@ -14,9 +17,15 @@ func NewUserPersistence() repository.UserRepository {
 }
 
 func (up userPersistence) GetUser(token string) (*model.User, error) {
-	user1 := model.User{}
-	user1.ID = "1"
-	user1.Token = "AAABBBCCCDDD"
-	user1.Name = "Taka"
-	return &user1, nil
+	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/test")
+	defer db.Close()
+	if err != nil {
+		return nil, err
+	}
+	user := model.User{}
+	err = db.QueryRow("SELECT * FROM users WHERE token =? LIMIT 1", token).Scan(&user.ID, &user.Name, &user.Token)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"fmt"
 	"main/usecase"
 	"net/http"
 
@@ -10,6 +11,7 @@ import (
 // UserHandler : UserのHandlerのインターフェース
 type UserHandler interface {
 	GetUser(c echo.Context) error
+	// CreateUser(c echo.Context) error
 }
 
 type userHandler struct {
@@ -22,10 +24,6 @@ func NewUserHandler(ur usecase.UserUseCase) UserHandler {
 	}
 }
 
-// func (uh userHandler) GetUser(c echo.Context) error {
-// 	return c.String(http.StatusOK, "Hello, World!")
-// }
-
 func (uh userHandler) GetUser(c echo.Context) error {
 	type userField struct {
 		Name string `json:"name"`
@@ -33,9 +31,11 @@ func (uh userHandler) GetUser(c echo.Context) error {
 	type response struct {
 		User userField
 	}
-	user, err := uh.userUseCase.GetUser("")
+	token := c.Request().Header.Get("x-token")
+	user, err := uh.userUseCase.GetUser(token)
 	if err != nil {
 		// TODO: エラーハンドリングをきちんとする
+		fmt.Errorf("%v", err)
 		c.NoContent(http.StatusInternalServerError)
 		return err
 	}

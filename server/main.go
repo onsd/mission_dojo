@@ -20,8 +20,9 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	// Routes
-	e.GET("/user/get", userHander.GetUser)
+	// Routes for user
+	userGroup := e.Group("/user")
+	userGroup.GET("/get", userHander.GetUser)
 	// //user
 	// http.HandleFunc("/user/create", handler.CreateUser)
 	// http.HandleFunc("/user/get", userHander.GetUser)
