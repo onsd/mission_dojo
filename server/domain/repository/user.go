@@ -7,5 +7,5 @@ import (
 // UserRepository : userのrepository
 type UserRepository interface {
 	GetUser(token string) (*model.User, error)
-	CreateUser(token string) (*model.User, error)
+	CreateUser(name, token string) (*model.User, error)
 }

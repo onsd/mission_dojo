@@ -3,8 +3,10 @@ package persistence
 // repositoryにしたいがdomain/respositoryとかぶるのでpersistence
 import (
 	"database/sql"
+	"fmt"
 	"main/domain/model"
 	"main/domain/repository"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql" // for mysql
 )
@@ -15,9 +17,16 @@ type userPersistence struct{}
 func NewUserPersistence() repository.UserRepository {
 	return &userPersistence{}
 }
-
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
 func (up userPersistence) GetUser(token string) (*model.User, error) {
-	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/test")
+	connectionInformation := getEnv("MYSQL_USER", "root") + ":" + getEnv("MYSQL_PASSOWRD", "password") + "@tcp(" + getEnv("MYSQL_HOST", "localhost") + ":" + getEnv("MYSQL_PORT", "3306") + ")/" + getEnv("MYSQL_DATABASE", "database")
+	fmt.Println(connectionInformation)
+	db, err := sql.Open("mysql", connectionInformation) //FIXME 切り出す？
 	defer db.Close()
 	if err != nil {
 		return nil, err
@@ -30,9 +39,9 @@ func (up userPersistence) GetUser(token string) (*model.User, error) {
 	return &user, nil
 }
 
-func (up userPersistence) CreateUser(token string) (*model.User, error) {
-	// コンテナにしたときのために環境変数から取るようにする
-	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/test")
+func (up userPersistence) CreateUser(name, token string) (*model.User, error) {
+	connectionInformation := getEnv("MYSQL_USER", "root") + ":" + getEnv("MYSQL_PASSOWRD", "password") + "@tcp(" + getEnv("MYSQL_HOST", "localhost") + ":" + getEnv("MYSQL_PORT", "3306") + ")/" + getEnv("MYSQL_DATABASE", "database")
+	db, err := sql.Open("mysql", connectionInformation) //FIXME 切り出す？
 	defer db.Close()
 	if err != nil {
 		return nil, err
@@ -43,7 +52,7 @@ func (up userPersistence) CreateUser(token string) (*model.User, error) {
 		return nil, err
 	}
 
-	_, err = stmt.Exec(stmt, token)
+	_, err = stmt.Exec(name, token)
 	if err != nil {
 		return nil, err
 	}
