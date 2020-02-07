@@ -1,56 +1,32 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
-	_ "github.com/go-sql-driver/mysql"
-	"main/handler"
-	"net/http"
+	"main/handler/rest"
+	"main/infra/persistence"
+	"main/usecase"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
-	checkSQLConnection()
-	http.HandleFunc("/", handler.IndexHandler)
+	e := echo.New()
 
-	//user
-	http.HandleFunc("/user/create", handler.CreateUser)
-	http.HandleFunc("/user/get", handler.GetUser)
-	http.HandleFunc("/user/update", handler.UpdateUser)
+	userPersistence := persistence.NewUserPersistence()
+	userUseCase := usecase.NewUserUseCase(userPersistence)
+	userHander := rest.NewUserHandler(userUseCase)
 
-	// 8080ポートで起動
-	http.ListenAndServe(":8080", nil)
-}
+	// Middleware
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
-func checkSQLConnection() {
-	db, err := sql.Open("mysql", "test:password@tcp(127.0.0.1:3306)/test")
-	if err != nil {
-		panic(err)
-	}
+	// Routes
+	e.GET("/user/get", userHander.GetUser)
+	// //user
+	// http.HandleFunc("/user/create", handler.CreateUser)
+	// http.HandleFunc("/user/get", userHander.GetUser)
+	// http.HandleFunc("/user/update", handler.UpdateUser)
 
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
-
-	var id int
-	var name string
-	rows, err := db.Query("select * from users where id < ?", 6)
-	if err != nil {
-		panic(err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		err := rows.Scan(&id, &name)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println(id, name)
-	}
-
-	err = rows.Err()
-	if err != nil {
-		panic(err)
-	}
+	// Start server
+	e.Logger.Fatal(e.Start(":8080"))
 }
