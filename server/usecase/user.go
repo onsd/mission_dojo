@@ -7,7 +7,7 @@ import (
 )
 
 type UserUseCase interface {
-	GetUser(context.Context) ([]*model.User, error)
+	GetUser(context.Context) (*model.User, error)
 }
 
 type userUseCase struct {
@@ -20,7 +20,7 @@ func NewUserUseCase(ur repository.UserRepository) UserUseCase {
 	}
 }
 
-func (ur userUseCase) GetUser(ctx context.Context) (users []*model.User, err error) {
+func (ur userUseCase) GetUser(ctx context.Context) (users *model.User, err error) {
 	users, err = ur.userRepository.GetUser(ctx)
 	if err != nil {
 		return nil, err

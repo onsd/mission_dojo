@@ -14,10 +14,10 @@ func NewUserPersistence() repository.UserRepository {
 	return &userPersistence{}
 }
 
-func (up userPersistence) GetUser(context.Context) ([]*model.User, error) {
+func (up userPersistence) GetUser(context.Context) (*model.User, error) {
 	user1 := model.User{}
 	user1.ID = "1"
 	user1.Token = "AAABBBCCCDDD"
 	user1.Name = "Taka"
-	return []*model.User{&user1}, nil
+	return &user1, nil
 }
