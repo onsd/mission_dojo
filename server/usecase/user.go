@@ -7,6 +7,7 @@ import (
 
 type UserUseCase interface {
 	GetUser(token string) (*model.User, error)
+	CreateUser(name string) (*model.User, error)
 }
 
 type userUseCase struct {
@@ -26,4 +27,12 @@ func (ur userUseCase) GetUser(token string) (users *model.User, err error) {
 		return nil, err
 	}
 	return users, nil
+}
+
+func (ur userUseCase) CreateUser(name string) (user *model.User, err error) {
+	user, err = ur.userRepository.CreateUser(name)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }

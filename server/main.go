@@ -14,7 +14,7 @@ func main() {
 
 	userPersistence := persistence.NewUserPersistence()
 	userUseCase := usecase.NewUserUseCase(userPersistence)
-	userHander := rest.NewUserHandler(userUseCase)
+	userHandler := rest.NewUserHandler(userUseCase)
 
 	// Middleware
 	e.Use(middleware.Logger())
@@ -22,7 +22,8 @@ func main() {
 
 	// Routes for user
 	userGroup := e.Group("/user")
-	userGroup.GET("/get", userHander.GetUser)
+	userGroup.GET("/get", userHandler.GetUser)
+	userGroup.POST("/create", userHandler.CreateUser)
 	// //user
 	// http.HandleFunc("/user/create", handler.CreateUser)
 	// http.HandleFunc("/user/get", userHander.GetUser)
