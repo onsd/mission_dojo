@@ -60,3 +60,23 @@ func (up userPersistence) CreateUser(name, token string) (*model.User, error) {
 	user := model.User{Token: token}
 	return &user, nil
 }
+
+func (up userPersistence) UpdateUser(name, token string) error {
+	connectionInformation := getEnv("MYSQL_USER", "root") + ":" + getEnv("MYSQL_PASSOWRD", "password") + "@tcp(" + getEnv("MYSQL_HOST", "localhost") + ":" + getEnv("MYSQL_PORT", "3306") + ")/" + getEnv("MYSQL_DATABASE", "database")
+	db, err := sql.Open("mysql", connectionInformation) //FIXME 切り出す？
+	defer db.Close()
+	if err != nil {
+		return err
+	}
+	stmt, err := db.Prepare("UPDATE users SET name=? WHERE token=?")
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(name, token)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

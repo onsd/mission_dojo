@@ -9,6 +9,7 @@ import (
 type UserUseCase interface {
 	GetUser(token string) (*model.User, error)
 	CreateUser(name string) (*model.User, error)
+	UpdateUser(name, token string) error
 }
 
 type userUseCase struct {
@@ -39,4 +40,12 @@ func (ur userUseCase) CreateUser(name string) (user *model.User, err error) {
 		return nil, err
 	}
 	return user, nil
+}
+
+func (ur userUseCase) UpdateUser(name, token string) error {
+	err := ur.userRepository.UpdateUser(name, token)
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -12,6 +12,7 @@ import (
 type UserHandler interface {
 	GetUser(c echo.Context) error
 	CreateUser(c echo.Context) error
+	UpdateUser(c echo.Context) error
 }
 
 type userHandler struct {
@@ -26,12 +27,10 @@ func NewUserHandler(ur usecase.UserUseCase) UserHandler {
 }
 
 func (uh userHandler) GetUser(c echo.Context) error {
-	type userField struct {
+	type response struct {
 		Name string `json:"name"`
 	}
-	type response struct {
-		User userField
-	}
+
 	token := c.Request().Header.Get("x-token")
 	user, err := uh.userUseCase.GetUser(token)
 	if err != nil {
@@ -40,7 +39,7 @@ func (uh userHandler) GetUser(c echo.Context) error {
 		c.NoContent(http.StatusInternalServerError)
 		return err
 	}
-	res := new(userField)
+	res := new(response)
 	res.Name = user.Name
 	// クライアントにレスポンスを返却
 	return c.JSON(http.StatusOK, res)
@@ -69,4 +68,22 @@ func (uh userHandler) CreateUser(c echo.Context) error {
 	res := new(response)
 	res.Token = user.Token
 	return c.JSON(http.StatusOK, res)
+}
+
+func (uh userHandler) UpdateUser(c echo.Context) error {
+	type request struct {
+		Name  string `json:"name"`
+		Token string `json:"token"`
+	}
+	req := new(request)
+	if err := c.Bind(req); err != nil {
+		return err
+	}
+	req.Token = c.Request().Header.Get("x-token")
+	err := uh.userUseCase.UpdateUser(req.Name, req.Token)
+	if err != nil {
+		fmt.Errorf("%v", err)
+		return c.NoContent(http.StatusInternalServerError)
+	}
+	return c.NoContent(http.StatusOK)
 }

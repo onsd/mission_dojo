@@ -24,7 +24,7 @@ func main() {
 	userGroup := e.Group("/user")
 	userGroup.GET("/get", userHandler.GetUser)
 	userGroup.POST("/create", userHandler.CreateUser)
-
+	userGroup.PUT("/update", userHandler.UpdateUser)
 	// Start server
 	e.Logger.Fatal(e.Start(":8080"))
 }
