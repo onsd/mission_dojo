@@ -2,7 +2,6 @@ package persistence
 
 // repositoryにしたいがdomain/respositoryとかぶるのでpersistence
 import (
-	"context"
 	"main/domain/model"
 	"main/domain/repository"
 )
@@ -14,7 +13,7 @@ func NewUserPersistence() repository.UserRepository {
 	return &userPersistence{}
 }
 
-func (up userPersistence) GetUser(context.Context) (*model.User, error) {
+func (up userPersistence) GetUser(token string) (*model.User, error) {
 	user1 := model.User{}
 	user1.ID = "1"
 	user1.Token = "AAABBBCCCDDD"
